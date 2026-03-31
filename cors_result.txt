@@ -1,0 +1,18 @@
+Status: 200
+Headers:
+Connection: close
+Content-Length: 2
+access-control-allow-credentials: true
+access-control-allow-methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
+access-control-allow-origin: https://oil-cast-ai.vercel.app
+access-control-max-age: 600
+x-railway-cdn-edge: fastly/cache-msp11864-MSP
+content-type: text/plain; charset=utf-8
+date: Tue, 31 Mar 2026 05:27:03 GMT
+server: railway-edge
+vary: Origin
+x-railway-edge: railway/us-east4-eqdc4a
+x-railway-request-id: 8MvrHoFYQkKt1I-ICx5-qw
+x-cache: MISS
+x-cache-hits: 0
+x-served-by: cache-msp11864-MSP
