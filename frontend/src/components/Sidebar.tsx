@@ -11,11 +11,11 @@ const navItems = [
     { name: 'Admin Tools', href: '/admin', icon: Settings },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen }: { isOpen: boolean }) {
     const pathname = usePathname()
 
     return (
-        <aside className="w-64 glass-panel border-r border-gray-800 flex flex-col transition-all duration-300 z-20">
+        <aside className={`fixed lg:static inset-y-0 left-0 w-64 glass-panel border-r border-gray-800 flex flex-col transition-all duration-300 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
             <div className="h-16 flex items-center px-6 border-b border-gray-800">
                 <Droplet className="w-6 h-6 text-primary mr-2 shadow-primary/50" />
                 <span className="text-xl font-bold tracking-tight text-white shadow-sm">OilCast AI</span>

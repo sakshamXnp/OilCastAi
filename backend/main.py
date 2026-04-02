@@ -44,7 +44,7 @@ def news_intelligence_service():
             db = database.SessionLocal()
             orchestrator = DataOrchestrator(db)
             # Fetch latest historical data & news sentiment
-            orchestrator.update_all_data(days=1) # Only fetch last 1 day for speed
+            orchestrator.update_all_data(days=365) # Fetch 365 days for model training capability
             db.close()
             logger.info("Market intelligence sync complete.")
         except Exception as e:

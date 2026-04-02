@@ -1,8 +1,8 @@
 "use client"
 import { useState, useRef, useEffect } from 'react'
-import { Bell, Search, UserCircle, LogOut, Settings, Key, Zap, AlertTriangle } from 'lucide-react'
+import { Bell, Search, UserCircle, LogOut, Settings, Key, Zap, AlertTriangle, Menu } from 'lucide-react'
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
     const [isProfileOpen, setIsProfileOpen] = useState(false)
     const [isNotifOpen, setIsNotifOpen] = useState(false)
 
@@ -24,14 +24,23 @@ export default function Topbar() {
     }, [])
 
     return (
-        <header className="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-6 z-50 relative">
-            <div className="flex items-center bg-secondary/50 rounded-lg px-4 py-2 border border-gray-700/50 w-80 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
-                <Search className="w-4 h-4 text-gray-400 mr-2" />
-                <input
-                    type="text"
-                    placeholder="Search models, active datasets..."
-                    className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500"
-                />
+        <header className="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 md:px-6 z-50 relative">
+            <div className="flex items-center space-x-4">
+                <button 
+                    onClick={onMenuClick}
+                    className="p-2 text-gray-400 hover:text-white lg:hidden transition-colors"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
+                
+                <div className="flex items-center bg-secondary/50 rounded-lg px-3 md:px-4 py-2 border border-gray-700/50 w-40 md:w-80 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
+                    <Search className="w-4 h-4 text-gray-400 mr-2" />
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500"
+                    />
+                </div>
             </div>
 
             <div className="flex items-center space-x-5 relative">

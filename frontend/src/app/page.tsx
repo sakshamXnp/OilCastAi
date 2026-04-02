@@ -141,7 +141,7 @@ export default function Dashboard() {
                 <div className="absolute left-0 top-0 bottom-0 px-4 bg-slate-900 flex items-center z-30 font-bold text-primary text-xs tracking-widest border-r border-white/5 uppercase">
                     <Globe className="w-3 h-3 mr-2 animate-pulse" /> Live Benchmarks
                 </div>
-                <div className="flex animate-ticker whitespace-nowrap pl-40">
+                <div className="flex animate-ticker whitespace-nowrap pl-4 sm:pl-40">
                     {(latestPrices.length > 0 ? [...latestPrices, ...latestPrices] : [...commodities, ...commodities]).map((c: any, i) => (
                         <div key={i} className="flex items-center space-x-2 px-8 py-1 border-r border-white/5">
                             <span className="text-gray-400 font-bold text-xs">{c.symbol}</span>
@@ -158,7 +158,7 @@ export default function Dashboard() {
                 {/* 2. Header & Quick Metrics */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-4xl font-black text-white tracking-tighter flex items-center">
+                        <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tighter flex items-center">
                             ENERGY INTELLIGENCE <span className="ml-3 px-2 py-0.5 bg-primary text-[10px] rounded uppercase tracking-widest font-bold">Platform v2.0</span>
                         </h1>
                         <p className="text-gray-400 mt-1 flex items-center text-sm" suppressHydrationWarning>
@@ -166,7 +166,7 @@ export default function Dashboard() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-2 lg:flex items-center gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex items-center gap-4">
                         <div className="glass-panel px-6 py-3 rounded-xl border-l-4 border-l-primary">
                             <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Market Sentiment</p>
                             <div className="flex items-center justify-between mt-1">
@@ -176,7 +176,7 @@ export default function Dashboard() {
                                 <Zap className={`w-4 h-4 ml-4 ${sentimentScore.score > 0 ? 'text-emerald-500' : 'text-amber-500'}`} />
                             </div>
                         </div>
-                        <div className="glass-panel px-6 py-3 rounded-xl border-l-4 border-l-emerald-500">
+                        <div className="glass-panel px-4 sm:px-6 py-3 rounded-xl border-l-4 border-l-emerald-500">
                             <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Active Signals</p>
                             <div className="flex items-center justify-between mt-1">
                                 <span className="text-lg font-bold text-white">High Reliability</span>
@@ -343,7 +343,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
 
-                            <div className="h-[400px] w-full relative">
+                            <div className="h-[300px] sm:h-[400px] w-full relative">
                                 {loading && (
                                     <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px] flex items-center justify-center z-10 transition-all rounded-2xl">
                                         <Activity className="w-10 h-10 text-primary animate-spin" />
@@ -488,18 +488,18 @@ export default function Dashboard() {
                         </div>
 
                         {/* Quick Stats Panel */}
-                        <div className="grid grid-cols-3 gap-6">
-                            <div className="glass-panel p-6 rounded-2xl flex flex-col items-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                            <div className="glass-panel p-4 sm:p-6 rounded-2xl flex flex-col items-center">
                                 <DollarSign className="w-5 h-5 text-primary mb-2" />
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Avg. Weekly</p>
                                 <p className="text-white font-bold">$73.20</p>
                             </div>
-                            <div className="glass-panel p-6 rounded-2xl flex flex-col items-center">
+                            <div className="glass-panel p-4 sm:p-6 rounded-2xl flex flex-col items-center">
                                 <TrendingUp className="w-5 h-5 text-emerald-500 mb-2" />
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Volatility</p>
                                 <p className="text-white font-bold">1.4%</p>
                             </div>
-                            <div className="glass-panel p-6 rounded-2xl flex flex-col items-center">
+                            <div className="glass-panel p-4 sm:p-6 rounded-2xl flex flex-col items-center">
                                 <Activity className="w-5 h-5 text-amber-500 mb-2" />
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Confidence</p>
                                 <p className="text-white font-bold">Medium</p>

@@ -46,29 +46,29 @@ export default function Predictions() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white flex items-center shadow-black drop-shadow-md">
-                        <BrainCircuit className="w-8 h-8 mr-3 text-primary" />
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center shadow-black drop-shadow-md">
+                        <BrainCircuit className="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-primary" />
                         AI Forecasting
                     </h1>
                     <p className="text-gray-400 mt-1">30-day ahead projections with confidence intervals</p>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                     <select
                         value={selectedOil}
                         onChange={(e) => setSelectedOil(e.target.value)}
-                        className="bg-secondary/50 border border-primary/30 text-white text-sm rounded-full px-4 py-2 outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
+                        className="bg-secondary/50 border border-primary/30 text-white text-sm rounded-full px-4 py-2 outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer w-full sm:w-auto"
                     >
                         <option value="CL=F">WTI Crude Oil</option>
                         <option value="BZ=F">Brent Crude Oil</option>
                     </select>
 
-                    <div className="flex bg-secondary/50 p-1 rounded-xl border border-gray-800 shadow-inner">
+                    <div className="flex bg-secondary/50 p-1 rounded-xl border border-gray-800 shadow-inner w-full sm:w-auto overflow-x-auto">
                         {['LSTM', 'ARIMA', 'LinearRegression'].map(m => (
                             <button
                                 key={m}
                                 onClick={() => setSelectedModel(m)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedModel === m ? 'bg-primary text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+                                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${selectedModel === m ? 'bg-primary text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
                             >
                                 {m === 'LinearRegression' ? 'Linear Reg' : m}
                             </button>
@@ -139,7 +139,7 @@ export default function Predictions() {
                 </div>
 
                 {/* Main Chart */}
-                <div className="glass-panel p-6 rounded-2xl lg:col-span-2 h-[520px] flex flex-col hover:border-gray-700/50 transition-all shadow-xl group">
+                <div className="glass-panel p-4 sm:p-6 rounded-2xl lg:col-span-2 h-[400px] sm:h-[520px] flex flex-col hover:border-gray-700/50 transition-all shadow-xl group">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h2 className="text-xl font-bold text-white tracking-wide">30-Day {selectedOil} Forecast</h2>

@@ -262,10 +262,10 @@ export default function OilPricesPage() {
             <div className="px-6 pt-6">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-4xl font-black text-white tracking-tighter flex items-center">
-                            <Droplet className="w-9 h-9 mr-3 text-blue-400" />
+                        <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tighter flex items-center">
+                            <Droplet className="w-6 h-6 sm:w-9 sm:h-9 mr-3 text-blue-400" />
                             OIL PRICE CHARTS
-                            <span className="ml-3 px-2.5 py-1 bg-blue-500/20 text-blue-400 text-[10px] rounded-lg uppercase tracking-widest font-black border border-blue-500/20">
+                            <span className="ml-3 px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[9px] sm:text-[10px] rounded-lg uppercase tracking-widest font-black border border-blue-500/20">
                                 Live
                             </span>
                         </h1>
@@ -276,21 +276,21 @@ export default function OilPricesPage() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex items-center gap-4">
                         {/* Stats Cards */}
                         <div className="glass-panel px-5 py-3 rounded-xl border-l-4 border-l-blue-500">
                             <p className="text-[10px] uppercase tracking-widest font-black text-gray-600">Benchmarks</p>
-                            <p className="text-xl font-black text-white mt-0.5">{totalBenchmarks}</p>
+                            <p className="text-lg sm:text-xl font-black text-white mt-0.5">{totalBenchmarks}</p>
                         </div>
                         <div className="glass-panel px-5 py-3 rounded-xl border-l-4 border-l-emerald-500">
                             <p className="text-[10px] uppercase tracking-widest font-black text-gray-600">Live Data</p>
-                            <p className="text-xl font-black text-emerald-400 mt-0.5">{activeBenchmarks}</p>
+                            <p className="text-lg sm:text-xl font-black text-emerald-400 mt-0.5">{activeBenchmarks}</p>
                         </div>
 
                         <button
                             onClick={fetchData}
                             disabled={loading}
-                            className="glass-panel p-3 rounded-xl hover:bg-white/10 transition-all border border-white/5 disabled:opacity-50"
+                            className="glass-panel p-3 rounded-xl hover:bg-white/10 transition-all border border-white/5 disabled:opacity-50 w-full sm:w-auto flex justify-center"
                         >
                             <RefreshCw className={`w-5 h-5 text-gray-400 ${loading ? 'animate-spin' : ''}`} />
                         </button>
