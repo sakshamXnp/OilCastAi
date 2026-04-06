@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import {
     TrendingUp, TrendingDown, Clock, Globe, BarChart3,
-    Fuel, Flag, MapPin, Droplet, RefreshCw, Minus
+    Fuel, Flag, MapPin, Droplet, RefreshCw, Minus, Layers, AlertCircle
 } from 'lucide-react'
 import { getOilPrices, OilPriceEntry, OilPricesGrouped } from '@/lib/api'
 
@@ -56,6 +56,14 @@ const CATEGORIES: CategoryConfig[] = [
         accent: 'text-violet-400',
         accentBg: 'bg-violet-500/10 border-violet-500/20',
     },
+    {
+        key: 'other_benchmarks',
+        label: 'Other Benchmarks',
+        icon: Layers,
+        description: 'Additional crude grades and uncategorized listings',
+        accent: 'text-slate-300',
+        accentBg: 'bg-slate-500/10 border-slate-500/20',
+    },
 ]
 
 function PriceRow({ entry, index }: { entry: OilPriceEntry; index: number }) {
@@ -80,18 +88,32 @@ function PriceRow({ entry, index }: { entry: OilPriceEntry; index: number }) {
                         <span className="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">
                             {entry.name}
                         </span>
-                        <span className="text-[10px] text-gray-600 font-mono tracking-wider mt-0.5">
-                            {entry.symbol}
-                        </span>
+                        <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-[9px] text-gray-600 font-mono tracking-wider">
+                                {entry.symbol}
+                            </span>
+                            {entry.tracking_benchmark && (
+                                <span className="text-[8px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 font-bold uppercase tracking-tighter">
+                                    via {entry.tracking_benchmark}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
             </td>
 
             {/* Region */}
             <td className="py-3.5 px-5 hidden md:table-cell">
-                <span className="text-xs text-gray-500 font-medium">
-                    {entry.region || '—'}
-                </span>
+                <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 font-medium">
+                        {entry.region || '—'}
+                    </span>
+                    {entry.current_spread !== undefined && entry.current_spread !== 0 && (
+                        <span className={`text-[9px] font-bold ${entry.current_spread > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                            {entry.current_spread > 0 ? '+' : ''}{entry.current_spread?.toFixed(2)} Spread
+                        </span>
+                    )}
+                </div>
             </td>
 
             {/* Price */}
@@ -221,16 +243,20 @@ function CategoryTable({ category, data }: { category: CategoryConfig; data: Oil
 export default function OilPricesPage() {
     const [data, setData] = useState<OilPricesGrouped | null>(null)
     const [loading, setLoading] = useState(true)
+    const [fetchError, setFetchError] = useState<string | null>(null)
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
     const [activeTab, setActiveTab] = useState<string>('all')
 
     const fetchData = async () => {
         setLoading(true)
+        setFetchError(null)
         try {
             const result = await getOilPrices()
             setData(result)
             setLastUpdated(new Date())
         } catch (e) {
+            const message = e instanceof Error ? e.message : 'Could not load oil prices.'
+            setFetchError(message)
             console.error('Failed to fetch oil prices:', e)
         } finally {
             setLoading(false)
@@ -245,11 +271,14 @@ export default function OilPricesPage() {
     }, [])
 
     const totalBenchmarks = data
-        ? Object.values(data).reduce((sum, arr) => sum + arr.length, 0)
+        ? Object.values(data).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0)
         : 0
 
     const activeBenchmarks = data
-        ? Object.values(data).flat().filter(e => e.has_data).length
+        ? Object.values(data)
+            .filter((arr): arr is OilPriceEntry[] => Array.isArray(arr))
+            .flat()
+            .filter(e => e.has_data).length
         : 0
 
     const filteredCategories = activeTab === 'all'
@@ -326,13 +355,45 @@ export default function OilPricesPage() {
             </div>
 
             {/* Loading State */}
-            {loading && !data && (
+            {loading && !data && !fetchError && (
                 <div className="px-6">
                     <div className="glass-panel rounded-2xl p-20 flex flex-col items-center justify-center">
                         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-6" />
                         <p className="text-gray-500 text-xs font-black tracking-widest uppercase">
                             Loading Global Oil Market Data...
                         </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Failed to reach API (wrong URL, CORS, network, etc.) */}
+            {fetchError && (
+                <div className="px-6">
+                    <div className="glass-panel rounded-2xl p-8 border border-rose-500/30 bg-rose-500/5">
+                        <div className="flex items-start gap-4">
+                            <AlertCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
+                            <div className="space-y-3 min-w-0">
+                                <h2 className="text-sm font-black text-rose-200 uppercase tracking-widest">
+                                    Could not load oil prices
+                                </h2>
+                                <p className="text-sm text-gray-300 leading-relaxed break-words">
+                                    {fetchError}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                    In Vercel, set <span className="font-mono text-gray-400">NEXT_PUBLIC_API_URL</span> to your Railway URL including the{' '}
+                                    <span className="font-mono text-gray-400">/api</span> path (or use the origin only — the app will append{' '}
+                                    <span className="font-mono text-gray-400">/api</span> automatically). Redeploy after changing env vars.
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={() => fetchData()}
+                                    disabled={loading}
+                                    className="px-4 py-2 rounded-xl bg-rose-500/20 text-rose-200 text-xs font-black uppercase tracking-widest border border-rose-500/30 hover:bg-rose-500/30 transition-colors disabled:opacity-50"
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -351,6 +412,13 @@ export default function OilPricesPage() {
                             />
                         )
                     })}
+                    {totalBenchmarks === 0 && (
+                        <div className="glass-panel rounded-2xl p-12 text-center border border-white/5">
+                            <p className="text-sm text-gray-400 font-medium">
+                                No commodities are registered in the database yet. After deploy, wait for the backend to finish seeding and ingestion, or check Railway logs.
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
 

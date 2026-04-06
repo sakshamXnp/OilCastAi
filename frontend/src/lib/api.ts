@@ -1,5 +1,20 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-const API_URL = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+/**
+ * FastAPI mounts routes under `/api` (see backend main.py). Production setups often set
+ * NEXT_PUBLIC_API_URL to the Railway origin only; without `/api` every request 404s and
+ * client pages look empty with no error.
+ */
+function normalizeApiBase(raw: string | undefined): string {
+    const fallback = 'http://localhost:8000';
+    let base = (raw ?? `${fallback}/api`).trim();
+    if (!base) base = `${fallback}/api`;
+    base = base.replace(/\/+$/, '');
+    if (!/\/api$/i.test(base)) {
+        base = `${base}/api`;
+    }
+    return base;
+}
+
+const API_URL = normalizeApiBase(process.env.NEXT_PUBLIC_API_URL);
 
 export interface Commodity {
     id: number;
@@ -113,6 +128,8 @@ export interface OilPriceEntry {
     timestamp: string | null;
     region: string | null;
     has_data: boolean;
+    tracking_benchmark?: string | null;
+    current_spread?: number | null;
 }
 
 export interface OilPricesGrouped {
@@ -121,10 +138,16 @@ export interface OilPricesGrouped {
     international: OilPriceEntry[];
     canadian_blends: OilPriceEntry[];
     us_blends: OilPriceEntry[];
+    /** Commodities whose DB category did not map to a known group */
+    other_benchmarks?: OilPriceEntry[];
 }
 
 export async function getOilPrices(): Promise<OilPricesGrouped> {
     const res = await fetch(`${API_URL}/oil-prices`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed to fetch oil prices');
+    if (!res.ok) {
+        throw new Error(
+            `Oil prices request failed (${res.status}). API base is ${API_URL} — open /api/oil-prices on your backend host to verify.`
+        );
+    }
     return res.json();
 }
