@@ -113,7 +113,9 @@ def get_latest_prices(db: Session = Depends(database.get_db)):
             "change": round(change, 2),
             "category": comm.category,
             "region": comm.region,
-            "status": "Operational" if last_two else "Pending"
+            "status": "Operational" if last_two else "Pending",
+            "tracking_benchmark": comm.tracking_benchmark,
+            "current_spread": comm.current_spread
         })
 
     return results
@@ -127,6 +129,17 @@ CATEGORY_MAP = {
     "canadian_blends": "CANADIAN",
     "us_blends": "US_BLEND",
 }
+
+# DB category string (any casing) -> response bucket key
+_CATEGORY_BUCKET = {v.upper(): k for k, v in CATEGORY_MAP.items()}
+
+
+def _oil_prices_bucket_key(category: Optional[str]) -> str:
+    if not category or not str(category).strip():
+        return "other_benchmarks"
+    norm = str(category).strip().upper()
+    return _CATEGORY_BUCKET.get(norm, "other_benchmarks")
+
 
 @router.get("/oil-prices")
 def get_oil_prices(db: Session = Depends(database.get_db)):
@@ -142,6 +155,7 @@ def get_oil_prices(db: Session = Depends(database.get_db)):
         "international": [],
         "canadian_blends": [],
         "us_blends": [],
+        "other_benchmarks": [],
     }
 
     for comm in commodities:
@@ -176,13 +190,12 @@ def get_oil_prices(db: Session = Depends(database.get_db)):
             "timestamp": timestamp,
             "region": comm.region,
             "has_data": has_data,
+            "tracking_benchmark": comm.tracking_benchmark,
+            "current_spread": comm.current_spread
         }
 
-        # Route to the correct category bucket
-        for key, cat_value in CATEGORY_MAP.items():
-            if comm.category == cat_value:
-                result[key].append(entry)
-                break
+        bucket = _oil_prices_bucket_key(comm.category)
+        result[bucket].append(entry)
 
     return result
 
